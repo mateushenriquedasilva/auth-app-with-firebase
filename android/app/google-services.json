@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "292477352967",
+    "project_id": "authflutter-d0201",
+    "storage_bucket": "authflutter-d0201.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:292477352967:android:242d402593bb37a08c3ea2",
+        "android_client_info": {
+          "package_name": "com.example.auth_app_with_firebase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0rPqfr0Q2mb0hK8L5p-HpZ8SxW29A-qk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

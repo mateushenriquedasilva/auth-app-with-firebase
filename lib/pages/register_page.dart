@@ -1,45 +1,52 @@
 import 'package:auth_app_with_firebase/components/my_button.dart';
 import 'package:auth_app_with_firebase/components/my_textfield.dart';
+import 'package:auth_app_with_firebase/components/square_tile.dart';
 import 'package:auth_app_with_firebase/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 
-import '../components/square_tile.dart';
-
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   final Function()? onTap;
-  const LoginPage({super.key, required this.onTap});
+  const RegisterPage({super.key, required this.onTap});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   // text editing controller
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
-  // sing in user
-  void singUserIn() async {
+  void singUserUp() async {
     showDialog(
         context: context,
         builder: (context) {
           return const Center(child: CircularProgressIndicator());
         });
+
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text, password: passwordController.text);
+      if (passwordController.text == confirmPasswordController.text) {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: emailController.text, password: passwordController.text);
+      } else {
+        showToast("Passwords are not the same!",
+            duration: 2, gravity: Toast.bottom);
+      }
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
 
       switch (e.code) {
-        case 'user-not-found':
-          showToast("User not found!", duration: 2, gravity: Toast.bottom);
+        case 'weak-password':
+          showToast("Password needs at least 6 characters!",
+              duration: 2, gravity: Toast.bottom);
           break;
-        case 'wrong-password':
-          showToast("Wrong password!", duration: 2, gravity: Toast.bottom);
+        case 'email-already-in-use':
+          showToast("Email already in use!",
+              duration: 2, gravity: Toast.bottom);
           break;
         case 'invalid-email':
           showToast("Invalid email!", duration: 2, gravity: Toast.bottom);
@@ -65,16 +72,16 @@ class _LoginPageState extends State<LoginPage> {
           child: SingleChildScrollView(
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const SizedBox(height: 50),
+              const SizedBox(height: 30),
               // logo
               const Icon(
-                Icons.lock,
+                Icons.account_circle,
                 size: 100,
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 30),
               // message
               Text(
-                "welcome back you\'ve been missed!",
+                "Create an account on our app!",
                 style: TextStyle(color: Colors.grey[700], fontSize: 16),
               ),
               const SizedBox(height: 50),
@@ -90,22 +97,15 @@ class _LoginPageState extends State<LoginPage> {
                 obscureText: true,
               ),
               const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      "Forgot password?",
-                      style: TextStyle(color: Colors.grey[600]),
-                    ),
-                  ],
-                ),
+              MyTextfiled(
+                controller: confirmPasswordController,
+                hintText: "Confirm password",
+                obscureText: true,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               MyButton(
-                onTap: singUserIn,
-                textButton: "Sing In",
+                onTap: singUserUp,
+                textButton: "Sing Up",
               ),
               const SizedBox(height: 20),
               Padding(
@@ -148,7 +148,7 @@ class _LoginPageState extends State<LoginPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Not a member?",
+                  Text("Already have an account?",
                       style: TextStyle(
                           color: Colors.grey[700],
                           fontWeight: FontWeight.bold)),
@@ -156,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
                   GestureDetector(
                     onTap: widget.onTap,
                     child: const Text(
-                      "Register now",
+                      "Log in",
                       style: TextStyle(
                           color: Colors.blue, fontWeight: FontWeight.bold),
                     ),

@@ -26,6 +26,9 @@ class MyTextfiled extends StatelessWidget {
             fillColor: Colors.grey.shade200,
             filled: true,
             hintText: hintText,
+            prefixIcon: hintText == 'Email'
+                ? const Icon(Icons.email_outlined)
+                : const Icon(Icons.lock_outline),
             hintStyle: TextStyle(color: Colors.grey[500])),
       ),
     );
